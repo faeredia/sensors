@@ -10,7 +10,7 @@ echo "<h1>$sensorid says: $valuetype is $value$units</h1>";
 #make the connection to the database
 include 'db_conn.php';
 
-$sql = "INSERT INTO `GenericSensorData` (`SensorID`, `ValueType`, `Value`, `Units`) VALUES ('$sensorid', '$valuetype', $value, '$units')";
+$sql = "INSERT INTO `generic_sensor_data` (`sensor_id`, `value_type`, `value`, `units`) VALUES ('$sensorid', '$valuetype', $value, '$units')";
 
 $result = $conn->query($sql);
 

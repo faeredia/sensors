@@ -1,9 +1,15 @@
+#to push code to esp, use:
+#sudo ampy -p /dev/ttyUSB0 put main.py main.py
+
 import urequests
 import dht
 import time
 import machine
 import network
 import ubinascii
+
+#how many times should we try to connect before giving up?
+conn_tries = 2
 
 #setup connection to the network
 wlan = network.WLAN(network.STA_IF)
@@ -30,8 +36,19 @@ def uploadGenericSensorData(valType, val, unit):
     url = url + "&value=" + val
     url = url + "&units=" + unit
 
-    print(url)
-    urequests.get(url)
+    try_num = 1
+    #try a few times to connect to the server. if we fail, give up. 
+    while(try_num <= conn_tries):
+        print("Try", try_num, ":")
+        print(url)
+        try:
+            urequests.get(url)
+            break
+        except:
+            print("Failed")
+        try_num += 1
+    if(try_num > conn_tries):
+        print("Giving up after", try_num -1, "tries.")
 
 #main loop
 while(True):

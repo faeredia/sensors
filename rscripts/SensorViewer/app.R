@@ -10,6 +10,7 @@
 library(shiny)
 library(RMariaDB)
 library(dplyr)
+library(ggplot2)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -17,7 +18,7 @@ ui <- fluidPage(
    # Application title
    titlePanel("Sensor Viewer"),
    
-   # Sidebar with a slider input for number of bins 
+   # Sidebar with tuneable options
    sidebarLayout(
       sidebarPanel(
          dateRangeInput("dateRange", h3("Date Range")),
@@ -25,13 +26,16 @@ ui <- fluidPage(
                      choices = list("TEMPERATURE",
                                     "HUMIDITY"),
                      selected = "TEMPERATURE"
-         )
-          
+         ),
+         h3("Aestethics"), #placeholder
+         checkboxInput("showPoints", "Show Points", value = TRUE)
+           
       ),
       
-      # Show a plot of the generated distribution
+      #the body of the page
       mainPanel(
-         plotOutput("mainPlot")
+        #the main plot
+        plotOutput("mainPlot")
       )
    )
 )
@@ -60,9 +64,15 @@ server <- function(input, output) {
     #plot(mydat$value ~ mydat$date, type='line', ylim=c(0, 40), ylab = input$valTypeSelect)
     #set the ylim high to eaither twice the mean (mean is centered) or to the max value, whichever is greatest
     ylimhigh <- max(2 * mean(mydat$value), max(mydat$value))
-    #plot using ggplot
+    #set the plot aestethics
     plt <- ggplot(mydat, aes(x=date, y=value, color=sensor_id)) + geom_line() + ylim(0,ylimhigh) + ylab(input$valTypeSelect)
+    #set the theme for the plot
     plt <- plt + theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+    #if the 'showPoint' checkbox is pressed, show the individual datapoints
+    if(input$showPoints == TRUE){
+      plt <- plt + geom_point()
+    }
+    #show the plot
     plt
   })
 }

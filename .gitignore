@@ -1,0 +1,3 @@
+#dont share our connection settings
+dash/conn.py
+http/db_conn.php

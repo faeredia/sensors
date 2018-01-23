@@ -20,7 +20,7 @@ wlan.ifconfig()
 #define the name of the board
 sensID = "SENSOR" + str(int(ubinascii.hexlify(machine.unique_id()), 16))
 #which pin is the dht attached to?
-d = dht.DHT11(machine.Pin(2))
+d = dht.DHT22(machine.Pin(2))
 
 #setup the alarm so that we can deepsleep the device
 rtc = machine.RTC()
@@ -53,7 +53,8 @@ def uploadGenericSensorData(valType, val, unit):
 #main loop
 while(True):
     print("starting..")
-
+    #wait half a second to let the DHT sort itself out.
+    time.sleep(0.5)
     try:
         print("measure")
         d.measure()

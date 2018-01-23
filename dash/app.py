@@ -7,14 +7,28 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 
-from conn import db_conn
+import mysql.connector as sql
+
+#local import
+#ensure __init__.py is present in dir.
+from conn import conn_str
+# conn_str is a dict with the following:
+# 'host' : 'yourhostname'
+# 'db' : 'yourdbname'
+# 'uid' : 'yourusername'
+# 'pwd' : 'yourpassword'
 
 #Fetch data from the server
 #keep the connection details somewhere safe on the server side.
+db_conn = sql.connect(hostname=conn_str['host'],
+                      database=conn_str['db'],
+                      username=conn_str['uid'],
+                      password=conn_str['pwd'])
 df = pd.read_sql('SELECT * FROM generic_sensor_data', db_conn)
 db_conn.close()
 
-app = add.Dash()
+
+app = dash.Dash()
 
 app.layout = html.Div(children=[
     html.H1(children='Hello Dash'),
